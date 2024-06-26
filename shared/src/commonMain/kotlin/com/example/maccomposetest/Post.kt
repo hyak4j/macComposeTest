@@ -9,4 +9,10 @@ class Post {
         val posts = postRepository.getPosts()
         return  posts
     }
+
+    suspend fun getPostListByPost(): List<PostModel>{
+        val postRepository = PostRepository()
+        val posts = postRepository.getPostsByPost()
+        return  posts
+    }
 }

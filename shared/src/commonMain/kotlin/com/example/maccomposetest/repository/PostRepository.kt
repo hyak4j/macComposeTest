@@ -9,5 +9,9 @@ class PostRepository : KoinComponent {
     suspend fun getPosts(): List<PostModel> {
         return apiService.getPosts()
     }
+
+    suspend fun getPostsByPost(): List<PostModel> {
+        return apiService.getPostsByPost()
+    }
 }
 

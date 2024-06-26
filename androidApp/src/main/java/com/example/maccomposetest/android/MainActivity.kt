@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        initKoin()
+        initKoin()
         setContent {
             MyApplicationTheme {
                 Surface(
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(true) {
                         scope.launch {
                             text = try {
-                                Post().getPostList().get(5).title
+                                Post().getPostListByPost().get(5).title
                             } catch (e: Exception) {
                                 e.localizedMessage ?: "error"
                             }
