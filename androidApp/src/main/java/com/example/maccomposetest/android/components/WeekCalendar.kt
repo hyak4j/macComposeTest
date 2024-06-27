@@ -1,5 +1,7 @@
 package com.example.maccomposetest.android.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,20 +25,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.maccomposetest.android.R
+import com.example.maccomposetest.android.model.CalendarUiModel
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Preview
-fun Header() {
+fun Header(data: CalendarUiModel) {
     Row (horizontalArrangement = Arrangement.End){
         Text(
-            text = "2024 / 06",
+            // show "Today" if user selects today's date
+            // else, show the full format of the date
+            text = if (data.selectedDate.isToday) {
+                "Today"
+            } else {
+                data.selectedDate.date.format(
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+                )
+            },
             modifier = Modifier
-                .align(Alignment.CenterVertically),
-            color = Color(0xFF8B8B8B)
+                .weight(1f)
+                .align(Alignment.CenterVertically)
         )
         Icon(
             modifier = Modifier
@@ -61,14 +73,22 @@ fun Header() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentItem(day: String, date: String) {
+fun ContentItem(date: CalendarUiModel.Date) {
     Card(
         modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 4.dp),
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+        ,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            // background colors of the selected date
+            // and the non-selected date are different
+            containerColor = if (date.isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.secondary
+            }
         ),
     ) {
         Column(
@@ -78,12 +98,12 @@ fun ContentItem(day: String, date: String) {
                 .padding(4.dp)
         ) {
             Text(
-                text = day,
+                text = date.day, // day "Mon", "Tue"
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.bodySmall
             )
             Text(
-                text = date,
+                text = date.date.dayOfMonth.toString(), // date "15", "16"
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -91,12 +111,13 @@ fun ContentItem(day: String, date: String) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Preview
-fun Content() {
+fun Content(data: CalendarUiModel) {
     LazyRow {
-        items(items = List(7) { Pair("Sun", "21") }) { date ->
-            ContentItem(date.first, date.second)
+        // pass the visibleDates to the UI
+        items(items = data.visibleDates) { date ->
+            ContentItem(date)
         }
     }
 }
