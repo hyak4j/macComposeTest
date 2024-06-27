@@ -1,7 +1,6 @@
 package com.example.maccomposetest.android.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,13 +27,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.maccomposetest.android.R
 import com.example.maccomposetest.android.model.CalendarUiModel
+import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Header(data: CalendarUiModel) {
+fun Header(
+    data: CalendarUiModel,
+    onPrevClickListener: (LocalDate) -> Unit,
+    onNextClickListener: (LocalDate) -> Unit,
+) {
     Row (horizontalArrangement = Arrangement.End){
         Text(
             // show "Today" if user selects today's date
@@ -58,13 +61,17 @@ fun Header(data: CalendarUiModel) {
             tint = Color(0xFF8B8B8B),
             contentDescription = "calendar"
         )
-        IconButton(onClick = { }) {
+        IconButton(onClick = {
+            onPrevClickListener(data.startDate.date)
+        }) {
             Icon(
                 imageVector = Icons.Filled.ChevronLeft,
                 contentDescription = "Previous"
             )
         }
-        IconButton(onClick = { }) {
+        IconButton(onClick = {
+            onNextClickListener(data.endDate.date)
+        }) {
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
                 contentDescription = "Next"
@@ -73,13 +80,18 @@ fun Header(data: CalendarUiModel) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentItem(date: CalendarUiModel.Date) {
+fun ContentItem(
+    date: CalendarUiModel.Date,
+    onDateClickListener: (CalendarUiModel.Date) -> Unit
+) {
     Card(
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 4.dp)
+            .clickable {
+                onDateClickListener(date)
+            }
         ,
         colors = CardDefaults.cardColors(
             // background colors of the selected date
@@ -111,13 +123,18 @@ fun ContentItem(date: CalendarUiModel.Date) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Content(data: CalendarUiModel) {
+fun Content(
+    data: CalendarUiModel,
+    onDateClickListener: (CalendarUiModel.Date) -> Unit,
+) {
     LazyRow {
         // pass the visibleDates to the UI
         items(items = data.visibleDates) { date ->
-            ContentItem(date)
+            ContentItem(
+                date = date,
+                onDateClickListener
+            )
         }
     }
 }
