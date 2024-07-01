@@ -1,6 +1,7 @@
 package com.example.maccomposetest.android.model
 
 import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
 
 
 data class CalendarUiModel(
@@ -16,6 +17,6 @@ data class CalendarUiModel(
         val isSelected: Boolean,
         val isToday: Boolean
     ) {
-        val day: String = date.format(DateTimeFormatter.ofPattern("E")) // get the day by formatting the date
+        val day: String = date.format(DateTimeFormatter.ofPattern("E", Locale.ENGLISH))
     }
 }
