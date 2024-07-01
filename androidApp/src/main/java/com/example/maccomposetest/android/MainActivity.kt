@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.maccomposetest.android.components.Content
 import com.example.maccomposetest.android.components.Header
 import com.example.maccomposetest.android.repository.CalendarDataSource
+import com.example.maccomposetest.android.theme.AppTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)
         setContent {
-            MyApplicationTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -43,10 +44,8 @@ class MainActivity : ComponentActivity() {
 fun CalendarAppPreview() {
     CalendarApp(
         modifier = Modifier.padding(
-            top = 2.dp,
-            bottom = 2.dp,
-            start = 16.dp,
-            end = 0.dp
+            vertical = 16.dp,
+            horizontal = 3.dp
         )
     )
 }
@@ -60,17 +59,13 @@ fun CalendarApp(modifier: Modifier = Modifier) {
         Header(
             data = calendarUiModel,
             onPrevClickListener = { startDate ->
-                println("startDate: $startDate")
 //                val finalStartDate = startDate.minusDays(1)   // (以一週為單位切換)
                 val finalStartDate = startDate.minusDays(1)
-                println("finalStartDate: $finalStartDate")
                 calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
             },
             onNextClickListener = { endDate ->
-                println("endDate: $endDate")
 //                val finalStartDate = endDate.plusDays(2)  // (以一週為單位切換)
                 val finalStartDate = endDate.minusDays(5)
-                println("finalStartDate: $finalStartDate")
                 calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
             }
         )
